@@ -305,6 +305,7 @@ class Client(slixmpp.ClientXMPP):
     connect_finished = False
     authenticated = False
     use_room_names = False
+    
 
     # The specific devices
     binary_devices = {}
@@ -325,12 +326,14 @@ class Client(slixmpp.ClientXMPP):
         '4': [1, 2, 4, 5]  # Left impuls, right impuls (channel 1,2,4,5)
     }
 
-    def __init__(self, jid, password, fahversion, iterations=None, salt=None):
+    def __init__(self, jid, password, host, port, fahversion, iterations=None, salt=None):
         """ x   """
         slixmpp.ClientXMPP.__init__(self, jid, password, sasl_mech='SCRAM-SHA-1')
 
         self.fahversion = fahversion
         self.x_jid = jid
+        self._host = host
+        self._port = port
 
         LOG.info(' version: %s', self.fahversion)
 
@@ -346,6 +349,7 @@ class Client(slixmpp.ClientXMPP):
         self.add_event_handler("roster_update", self.roster_callback)
         self.add_event_handler("pubsub_publish", self.pub_sub_callback)
         self.add_event_handler("failed_auth", self.failed_auth)
+        self.add_event_handler("disconnected", self._disconnected)
         
         # register plugins
         self.register_plugin('xep_0030')  # RPC
@@ -362,6 +366,14 @@ class Client(slixmpp.ClientXMPP):
         register_stanza_plugin(EventItems, EventItem, iterable=True)
         register_stanza_plugin(EventItem, ItemUpdate)
         register_stanza_plugin(EventItem, ItemUpdateEncrypted)
+
+    async def _disconnected(self, event):
+        ''' If connecting is lost, try to reconnect '''
+        LOG.info("Connection lost with SysAP. Trying to reconnect")
+        self.sysap_connect()
+    
+    def sysap_connect():
+        super(Client, self).connect((self._host, self._port))
 
     def connect_ready(self):
         """ Polling if the connection process is ready   """
@@ -962,9 +974,9 @@ class FreeAtHomeSysApp(object):
             if version.parse(fahversion) >= version.parse("2.3.0"):
                 iterations, salt = settings.get_scram_settings(self._user, 'SCRAM-SHA-256')
             # create xmpp client
-            self.xmpp = Client(self._jid, self._password, fahversion, iterations, salt)
+            self.xmpp = Client(self._jid, self._password, self._host, self._port, fahversion, iterations, salt)
             # connect
-            self.xmpp.connect((self._host, self._port), False, False, False)
+            self.xmpp.sysap_connect()
 
     async def wait_for_connection(self):
         """ Wait til connection is made, if failed at first attempt retry until success """
