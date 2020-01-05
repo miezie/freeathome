@@ -367,10 +367,10 @@ class Client(slixmpp.ClientXMPP):
         register_stanza_plugin(EventItem, ItemUpdate)
         register_stanza_plugin(EventItem, ItemUpdateEncrypted)
 
-    async def _disconnected(self, event):
+    async def _disconnected(self):
         ''' If connecting is lost, try to reconnect '''
         LOG.info("Connection lost with SysAP. Trying to reconnect")
-        self.sysap_connect()
+        await self.sysap_connect()
     
     async def sysap_connect(self):
         super(Client, self).connect((self._host, self._port))
@@ -976,7 +976,7 @@ class FreeAtHomeSysApp(object):
             # create xmpp client
             self.xmpp = Client(self._jid, self._password, self._host, self._port, fahversion, iterations, salt)
             # connect
-            self.xmpp.sysap_connect()
+            await self.xmpp.sysap_connect()
 
     async def wait_for_connection(self):
         """ Wait til connection is made, if failed at first attempt retry until success """
