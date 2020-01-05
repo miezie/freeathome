@@ -372,7 +372,7 @@ class Client(slixmpp.ClientXMPP):
         LOG.info("Connection lost with SysAP. Trying to reconnect")
         self.sysap_connect()
     
-    def sysap_connect():
+    async def sysap_connect(self):
         super(Client, self).connect((self._host, self._port))
 
     def connect_ready(self):
