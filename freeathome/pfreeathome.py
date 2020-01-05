@@ -989,7 +989,7 @@ class FreeAtHomeSysApp(object):
         if self.xmpp is not None:
             while self.xmpp.connect_ready() is False:
                 LOG.info('waiting for connection')
-                await asyncio.sleep(1)
+                await asyncio.sleep(5)
                 if self.xmpp.connecting_in_error() is True:
                     LOG.info('connecting in error, restart')
                     self.connect()
