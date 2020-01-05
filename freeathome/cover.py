@@ -6,7 +6,7 @@ from homeassistant.components.cover import (
 )
 import custom_components.freeathome as freeathome
 
-REQUIREMENTS = ['slixmpp==1.4.2']
+REQUIREMENTS = ['https://github.com/marconfus/slixmpp/archive/master.zip#slixmpp==1.4.2.1']
 
 _LOGGER = logging.getLogger(__name__)
 
