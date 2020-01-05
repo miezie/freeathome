@@ -367,7 +367,7 @@ class Client(slixmpp.ClientXMPP):
         register_stanza_plugin(EventItem, ItemUpdate)
         register_stanza_plugin(EventItem, ItemUpdateEncrypted)
 
-    async def _disconnected(self):
+    async def _disconnected(self, event):
         ''' If connecting is lost, try to reconnect '''
         LOG.info("Connection lost with SysAP. Trying to reconnect")
         self.sysap_connect()
