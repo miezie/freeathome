@@ -3,7 +3,7 @@ import logging
 from homeassistant.components.binary_sensor import (BinarySensorDevice)
 import custom_components.freeathome as freeathome
 
-REQUIREMENTS = ['https://github.com/marconfus/slixmpp/archive/master.zip#slixmpp==1.4.2.1']
+REQUIREMENTS = ['slixmpp==1.4.2']
 
 DEPENDENCIES = ['freeathome']
 
