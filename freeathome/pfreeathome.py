@@ -970,6 +970,7 @@ class FreeAtHomeSysApp(object):
 
         iterations = None
         salt = None
+        self.xmpp = None
 
         LOG.info('Connect Free@Home  %s ', self._jid)
 
