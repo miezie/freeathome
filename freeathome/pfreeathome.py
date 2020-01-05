@@ -373,7 +373,7 @@ class Client(slixmpp.ClientXMPP):
         LOG.info("Connection lost with SysAP.")
         self.connect_in_error = True
 
-    def connect_in_error(self):
+    def connecting_in_error(self):
         """ For checking if connection is in error or not"""
         return self.connect_in_error
     
@@ -989,8 +989,8 @@ class FreeAtHomeSysApp(object):
             while self.xmpp.connect_ready() is False:
                 LOG.info('waiting for connection')
                 await asyncio.sleep(1)
-                if self.xmpp.connect_in_error() is True:
-                    LOG.info('connect in error, restart')
+                if self.xmpp.connecting_in_error() is True:
+                    LOG.info('connecting in error, restart')
                     self.connect()
             return self.xmpp.authenticated
 
