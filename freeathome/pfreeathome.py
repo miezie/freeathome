@@ -370,9 +370,9 @@ class Client(slixmpp.ClientXMPP):
     async def _disconnected(self):
         ''' If connecting is lost, try to reconnect '''
         LOG.info("Connection lost with SysAP. Trying to reconnect")
-        await self.sysap_connect()
+        self.sysap_connect()
     
-    async def sysap_connect(self):
+    def sysap_connect(self):
         super(Client, self).connect((self._host, self._port))
 
     def connect_ready(self):
@@ -976,7 +976,7 @@ class FreeAtHomeSysApp(object):
             # create xmpp client
             self.xmpp = Client(self._jid, self._password, self._host, self._port, fahversion, iterations, salt)
             # connect
-            await self.xmpp.sysap_connect()
+            self.xmpp.sysap_connect()
 
     async def wait_for_connection(self):
         """ Wait til connection is made, if failed at first attempt retry until success """
