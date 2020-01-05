@@ -305,6 +305,7 @@ class Client(slixmpp.ClientXMPP):
     connect_finished = False
     authenticated = False
     use_room_names = False
+    connect_in_error = False
     
 
     # The specific devices
@@ -369,8 +370,12 @@ class Client(slixmpp.ClientXMPP):
 
     async def _disconnected(self, event):
         ''' If connecting is lost, try to reconnect '''
-        LOG.info("Connection lost with SysAP. Trying to reconnect")
-        self.sysap_connect()
+        LOG.info("Connection lost with SysAP.")
+        self.connect_in_error = True
+
+    def connect_in_error(self):
+        """ For checking if connection is in error or not"""
+        return self.connect_in_error
     
     def sysap_connect(self):
         super(Client, self).connect((self._host, self._port))
@@ -984,6 +989,9 @@ class FreeAtHomeSysApp(object):
             while self.xmpp.connect_ready() is False:
                 LOG.info('waiting for connection')
                 await asyncio.sleep(1)
+                if self.xmpp.connect_in_error() is True:
+                    LOG.info('connect in error, restart')
+                    self.connect()
             return self.xmpp.authenticated
 
     def get_devices(self, device_type):
