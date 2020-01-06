@@ -987,13 +987,13 @@ class FreeAtHomeSysApp(object):
     async def wait_for_connection(self):
         """ Wait til connection is made, if failed at first attempt retry until success """
         if self.xmpp is not None:
-            while self.xmpp.connect_ready() is False:
+            while self.xmpp.connect_ready() is False and self.xmpp.connecting_in_error() is False:
                 LOG.info('waiting for connection')
                 await asyncio.sleep(5)
-                if self.xmpp.connecting_in_error() is True:
-                    LOG.info('connecting in error, restart')
-                    self.connect()
-            return self.xmpp.authenticated
+            if self.xmpp.connect_in_error is True:
+                return False
+            else:
+                return True
 
     def get_devices(self, device_type):
         """ Get devices of a specific type from the sysap   """
