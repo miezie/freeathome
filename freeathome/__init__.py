@@ -2,6 +2,8 @@
 import logging
 import voluptuous as vol
 from homeassistant.helpers.discovery import load_platform
+from homeassistant.core import CoreState, callback
+from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_PORT
 import homeassistant.helpers.config_validation as cv
 
@@ -27,11 +29,22 @@ CONFIG_SCHEMA = vol.Schema({
 
 _LOGGER = logging.getLogger(__name__)
 
-async def async_setup(hass, base_config):
+async def async_setup(hass, config):
+    hass.async_create_task(
+            hass.config_entries.flow.async_init(
+                data={
+                    "config": config.get(DOMAIN)
+                },
+            )
+        )
+    
+    return True
+
+async def async_setup_entry(hass: core.HomeAssistant, entry: config_entries.ConfigEntry):
     """ Setup of the Free@Home interface for Home Assistant ."""
     from . import pfreeathome
 
-    config = base_config.get(DOMAIN)
+    config = entry.data["config"]
 
     host = config.get(CONF_HOST)
     port = config.get(CONF_PORT)
