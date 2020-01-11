@@ -2,8 +2,7 @@
 import logging
 import voluptuous as vol
 from homeassistant.helpers.discovery import load_platform
-from homeassistant.core import CoreState, callback
-from homeassistant import config_entries
+from homeassistant import config_entries, core
 from homeassistant.const import CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_PORT
 import homeassistant.helpers.config_validation as cv
 
