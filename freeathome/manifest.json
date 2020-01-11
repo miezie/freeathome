@@ -1,0 +1,7 @@
+{
+    "domain": "freeathome",
+    "name": "BJ Free@Home",
+    "config_flow": true,
+    "documentation": "https://github.com/jheling/freeathome",
+    "requirements": ["slixmpp==1.4.2"]
+}
